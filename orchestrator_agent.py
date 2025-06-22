@@ -25,6 +25,10 @@ def run_evaluator_agent():
     print("\n[📊 Running Evaluator Agent...]")
     subprocess.run(["python", "evaluator_agent.py"])
 
+def run_distribution_agent():
+    print("\n[📤 Running Distribution Agent...]")
+    subprocess.run(["python", "distribution_agent.py"])
+
 def check_memory_exists():
     return MEMORY_FILE.exists() and MEMORY_FILE.stat().st_size > 0
 
@@ -42,7 +46,8 @@ Choose a workflow:
 3. Full pipeline: Research → Content
 4. Run Web Search Agent
 5. Run Evaluator Agent
-6. Exit
+6. Run Distribution Agent
+7. Exit
     """)
 
     choice = input("Enter option number: ").strip()
@@ -62,6 +67,8 @@ Choose a workflow:
     elif choice == "5":
         run_evaluator_agent()
     elif choice == "6":
+        run_distribution_agent()
+    elif choice == "7":
         print("Exiting orchestrator.")
     else:
         print("Invalid choice.")
