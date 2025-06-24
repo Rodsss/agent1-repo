@@ -5,6 +5,7 @@ import requests
 import json
 from urllib.parse import quote
 from pathlib import Path
+from bs4 import BeautifulSoup
 
 from research_agent_stub import apply_skill_level_tone, extract_glossary_terms
 
@@ -75,3 +76,40 @@ if __name__ == "__main__":
     result = summarize_web_results(web_data, topic, level)
     print("\n--- Web Search Agent Output ---")
     print_output(result)
+
+def web_search_summary(topic, level):
+    print(f"[🌐] Searching web for: {topic} (level: {level})")
+
+    # Query DuckDuckGo HTML page
+    headers = {"User-Agent": "Mozilla/5.0"}
+    query_url = f"https://html.duckduckgo.com/html/?q={topic.replace(' ', '+')}+explanation"
+
+    try:
+        response = requests.get(query_url, headers=headers, timeout=10)
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # Extract top result snippets
+        results = soup.find_all("a", class_="result__a", limit=3)
+        snippets = [result.get_text(strip=True) for result in results]
+
+        if not snippets:
+            return {"summary": "No useful web results found.", "source": "web_search"}
+
+        combined = " ".join(snippets)
+
+        # Format based on skill level
+        if level == "novice":
+            summary = f"Beginner-friendly summary: {combined}"
+        elif level == "intermediate":
+            summary = f"Here’s what the web says: {combined}"
+        else:
+            summary = combined  # Leave unmodified for advanced
+
+        return {
+            "summary": summary,
+            "source": "web_search"
+        }
+
+    except Exception as e:
+        print(f"[⚠️] Web search failed: {e}")
+        return {"summary": "Search error occurred.", "source": "web_search"}

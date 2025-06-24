@@ -47,7 +47,9 @@ Choose a workflow:
 4. Run Web Search Agent
 5. Run Evaluator Agent
 6. Run Distribution Agent
-7. Exit
+7. View Weekly Digest (Inbox)
+8. Exit
+
     """)
 
     choice = input("Enter option number: ").strip()
