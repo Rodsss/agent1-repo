@@ -9,5 +9,23 @@
       "Internal"
     ],
     "note": "This explanation is simplified for beginners."
+  },
+  "3": {
+    "topic": "3",
+    "level": "intermediate",
+    "summary": "Here's a moderately detailed explanation:\n\n3 (three) is a number, numeral and digit. It is the natural number following 2 and preceding 4, and is the smallest odd prime number and the only prime preceding a square number. It has religious and cultural significance in many societies.\n\nThis version assumes you have some background knowledge.",
+    "glossary_terms": [],
+    "note": "Tailored for intermediate-level learners."
+  },
+  "fuel injection": {
+    "topic": "fuel injection",
+    "level": "novice",
+    "summary": "Imagine you're new to the topic. Here's a simple explanation:\n\nFuel injection is the introduction of fuel in an internal combustion engine, most commonly automotive engines, by the means of a fuel injector. This article focuses on fuel injection in reciprocating piston and Wankel rotary engines.\n\nTry thinking of it like a simplified version of a complex machine.",
+    "glossary_terms": [
+      "This",
+      "Wankel",
+      "Fuel"
+    ],
+    "note": "Tailored for novice-level learners."
   }
 }

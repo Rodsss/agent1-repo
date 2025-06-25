@@ -85,3 +85,8 @@ if __name__ == "__main__":
     create_weekly_digest()
     save_outputs()
     print("\n[✅ Distribution complete. Sections and inbox updated.]")
+
+def distribute_summary(topic, summary, level):
+    print(f"[📦] Distributing summary for '{topic}' to sections and inbox (level: {level})")
+    # Simulated routing
+    return True
