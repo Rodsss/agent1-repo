@@ -14,7 +14,7 @@ ROUTING_RULES = {
     "beginner": "basic_concepts"
 }
 
-MEMORY_FILE = Path("research_memory.json")
+MEMORY_FILE = None
 INBOX_FILE = Path("internal_inbox.json")
 SECTION_STORAGE = Path("section_outputs.json")
 
@@ -86,7 +86,80 @@ if __name__ == "__main__":
     save_outputs()
     print("\n[✅ Distribution complete. Sections and inbox updated.]")
 
-def distribute_summary(topic, summary, level):
-    print(f"[📦] Distributing summary for '{topic}' to sections and inbox (level: {level})")
-    # Simulated routing
-    return True
+from pathlib import Path
+import json
+from datetime import datetime
+
+def distribute_summary(topic, summary, level="novice", inbox_file=None, section_file=None):
+    print(f"[📦] Distributing summary for '{topic}' (level: {level})")
+
+    # Use default files if not provided
+    inbox_file = inbox_file or Path("internal_inbox.json")
+    section_file = section_file or Path("section_outputs.json")
+
+    # --- SECTION ROUTING ---
+    ROUTING_RULES = {
+        "fuel": "mechanical_systems",
+        "sensor": "electrical_systems",
+        "combustion": "advanced_topics",
+        "ignition": "mechanical_systems",
+        "beginner": "basic_concepts"
+    }
+
+    sections = set()
+    for keyword, section in ROUTING_RULES.items():
+        if keyword.lower() in topic.lower():
+            sections.add(section)
+    if level == "novice":
+        sections.add("basic_concepts")
+    if not sections:
+        sections.add("general_insights")
+
+    # Load existing section data
+    if section_file.exists():
+        section_data = json.loads(section_file.read_text("utf-8"))
+    else:
+        section_data = {}
+
+    for section in sections:
+        section_data.setdefault(section, []).append({
+            "topic": topic,
+            "summary": summary,
+            "level": level,
+            "timestamp": datetime.now().isoformat()
+        })
+
+    with open(section_file, "w", encoding="utf-8") as f:
+        json.dump(section_data, f, indent=2)
+
+    # --- WEEKLY DIGEST (INBOX) ---
+    if inbox_file.exists():
+        inbox = json.loads(inbox_file.read_text("utf-8"))
+    else:
+        inbox = {}
+
+    digest = inbox.setdefault("weekly_digest", {})
+    digest.setdefault(level, []).append({
+        "topic": topic,
+        "summary": summary,
+        "guidance": get_guidance(level),
+        "priority": get_priority(level),
+        "timestamp": datetime.now().isoformat()
+    })
+
+    with open(inbox_file, "w", encoding="utf-8") as f:
+        json.dump(inbox, f, indent=2)
+
+def get_guidance(level):
+    return {
+        "novice": "Review the basics to strengthen foundational understanding.",
+        "intermediate": "Explore practical applications and real-world use cases.",
+        "advanced": "Focus on comparing system-level trade-offs and performance.",
+    }.get(level, "")
+
+def get_priority(level):
+    return {
+        "novice": "low",
+        "intermediate": "medium",
+        "advanced": "high"
+    }.get(level, "medium")

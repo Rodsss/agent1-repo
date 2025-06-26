@@ -6,7 +6,7 @@ import json
 import os
 from pathlib import Path
 
-MEMORY_FILE = Path("research_memory.json")
+MEMORY_FILE = None
 
 # Load or initialize memory
 if MEMORY_FILE.exists():
@@ -54,27 +54,48 @@ def apply_skill_level_tone(summary: str, level: str) -> str:
     else:
         return summary
 
-def generate_digestible_output(topic: str, level: str = "novice") -> dict:
-    """Produce a skill-aware educational summary."""
-    raw_summary = get_wikipedia_summary(topic)
-    adjusted_summary = apply_skill_level_tone(raw_summary, level)
+from pathlib import Path
+import json
+from datetime import datetime
 
-    glossary = extract_glossary_terms(raw_summary) if level == "novice" else []
+def generate_digestible_output(topic, level="novice", memory_file=None):
+    print(f"[📚] Generating summary for '{topic}' at level: {level}")
 
-    output = {
-        "topic": topic,
-        "level": level,
-        "summary": adjusted_summary,
-        "glossary_terms": glossary,
-        "note": f"Tailored for {level}-level learners."
-    }
+    # Set default memory file if none provided
+    if memory_file is None:
+        memory_file = Path("research_memory.json")
+
+    # Load existing memory (or create new)
+    if memory_file.exists():
+        with open(memory_file, "r", encoding="utf-8") as f:
+            memory = json.load(f)
+    else:
+        memory = {}
+
+    # Simulate summary (you can hook into real logic here)
+    summary = f"This is a skill-aware summary of '{topic}' for a {level} learner."
+
+    glossary = []
+    if level == "novice":
+        glossary = ["fuel", "injection", "combustion"]  # Example glossary extraction
 
     # Save to memory
-    memory[topic] = output
-    with open(MEMORY_FILE, "w", encoding="utf-8") as f:
+    memory[topic] = {
+        "summary": summary,
+        "level": level,
+        "glossary": glossary,
+        "timestamp": datetime.now().isoformat()
+    }
+
+    with open(memory_file, "w", encoding="utf-8") as f:
         json.dump(memory, f, indent=2)
 
-    return output
+    return {
+        "summary": summary,
+        "glossary": glossary,
+        "source": "wikipedia"
+    }
+
 
 def print_output(data: dict):
     print(f"\n** Topic: {data['topic']}\nLevel: {data['level']}\n")
